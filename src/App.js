@@ -9,7 +9,7 @@ import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up
 
 import Header from "./components/header/header.component";
 
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 
 class App extends React.Component {
   constructor(props) {
@@ -20,9 +20,30 @@ class App extends React.Component {
   }
   unsubscribeFromAuth = null;
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      console.log("user: ", user);
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        // if use is signed in and object will return, validate to true;
+        const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot((snapShot) => {
+          this.setState(
+            {
+              currentUser: {
+                id: snapShot.id,
+                ...snapShot.data(),
+              },
+            },
+            () => console.log(this.state)
+          ); // end this.setState
+        });
+      } // end if
+      else {
+        // value null will return which we will setstate to null.
+        this.setState({
+          currentUser: userAuth,
+        });
+      }
+      // this.setState({ currentUser: user });
+      // console.log("user: ", user);
     });
   }
   componentWillUnmount() {
