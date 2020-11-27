@@ -25,15 +25,12 @@ class App extends React.Component {
         // if use is signed in and object will return, validate to true;
         const userRef = await createUserProfileDocument(userAuth);
         userRef.onSnapshot((snapShot) => {
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
             },
-            () => console.log(this.state)
-          ); // end this.setState
+          }); // end this.setState
         });
       } // end if
       else {
