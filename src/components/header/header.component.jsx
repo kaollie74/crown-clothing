@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux"; // gives us access to the store state;
 
 import { createStructuredSelector } from "reselect";
@@ -15,7 +14,7 @@ import {
   LogoContainer,
   OptionsContainer,
   OptionLink,
-  OptionDiv,
+  // OptionDiv,
 } from "./header.styles";
 
 // import "./header.styles.scss";
@@ -29,9 +28,9 @@ const Header = ({ currentUser, hidden }) => (
       <OptionLink to="/shop">SHOP</OptionLink>
       <OptionLink to="/contact">CONTACT</OptionLink>
       {currentUser ? (
-        <OptionDiv onClick={() => auth.signOut()}>SIGN OUT</OptionDiv>
+        <OptionLink onClick={() => auth.signOut()}>SIGN OUT</OptionLink>
       ) : (
-        <OptionLink to="/signin">SIGN IN</OptionLink>
+        <OptionLink  to="/signin">SIGN IN</OptionLink>
       )}
       <CartIcon />
     </OptionsContainer>
