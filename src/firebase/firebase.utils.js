@@ -33,9 +33,57 @@ export const createUserProfileDocument = async (
     } catch (error) {
       console.log("error creating user", error.message);
     }
-  }
+  } // end if
 
   return userRef;
+};
+
+// make new collections and documents in fire store.
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    console.log("newDocRef", newDocRef);
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit();
+}; // end addCollectionAndDocuments;
+
+export const convertCollectionSnapshotToMap = (collections) => {
+  const transformedCollection = collections.docs.map((docObj) => {
+    const { title, items } = docObj.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: docObj.id,
+      title,
+      items
+    }
+  });
+
+  /**
+   * we transformedCollection returns an array of objs. 
+   * ie => [{...}, {...}, {...}, etc...]
+   * we will run .reduce()
+   * to convert it to an obj of objs by setting the title prop as the key
+   * ie {
+   * hats:{...},
+   * womens:{...},
+   * etc.....
+   * }
+   */
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator; 
+  }, {})
+
+  console.log('Transformed Collection ::::', transformedCollection); 
 };
 
 firebase.initializeApp(config);
