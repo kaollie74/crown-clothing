@@ -13,6 +13,7 @@ import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { setCurrentUser } from "./redux/user/user.actions";
 import { createStructuredSelector } from "reselect";
 import { selectCurrentUser } from "./redux/user/user.selectors";
+
 // STYLES
 import "./App.css";
 
@@ -25,11 +26,12 @@ class App extends React.Component {
       if (userAuth) {
         // if use is signed in and object will return, validate to true;
         const userRef = await createUserProfileDocument(userAuth);
+
         userRef.onSnapshot((snapShot) => {
           setCurrentUser({
             id: snapShot.id,
             ...snapShot.data(),
-          }); // end this.setState
+          });
         });
       } // end if
       else {
